@@ -65,6 +65,14 @@ Route::get('/altausuario', function () {
     return view('Usuarios.altausuario');
 });
 
+Route::get('/formaparte', function () {
+    return view('FormaParte-FAQ.formaparte');
+});
+
+Route::get('/faq', function () {
+    return view('FormaParte-FAQ.preguntasfrecuentes');
+});
+
 Route::post('/registrar', [UsuarioController::class, 'RegistroUsuario'])->name('registrarController');
 Route::post('/loginusuario', [UsuarioController::class, 'LoginUsuario'])->name('loginController');
 
