@@ -89,15 +89,9 @@
                         break;
                 //------------------------------------------------
                     case 'obtenerEstacionMasCercana' :
-                        if(isset($_GET['id']) && ($_GET['id'] !== "") && isset($_GET['longitud']) && ($_GET['longitud'] !== "") && isset($_GET['latitud']) && ($_GET['latitud'] !== "")) {
-                            $response['result'] = $ws->estacionMasCercana($_GET['id'], $_GET['latitud'], $_GET['longitud']);
-                            $response['status'] = 200;
-                            header('HTTP/1.1 200 OK');
-                        } else {
-                            $response['error'] = 'id, longitud o latitud no recibidos';
-                            $response['status'] = 400;
-                            header('HTTP/1.1 400 Bad Request');
-                        }
+                        $response['result'] = $ws->estacionMasCercana($_GET['id'], $_GET['latitud'], $_GET['longitud']);
+                        $response['status'] = 200;
+                        header('HTTP/1.1 200 OK');
                         break;
                 //------------------------------------------------
                     default :

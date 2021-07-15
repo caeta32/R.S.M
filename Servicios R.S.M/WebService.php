@@ -625,75 +625,103 @@
          * @see http://www.movable-type.co.uk/scripts/latlong.html
          * @see https://en.wikipedia.org/wiki/Haversine_formula
          */
-        public function estacionMasCercana($idEstacion, $latitud, $longitud) {
+        public function estacionMasCercana($idEstacion, $latitud_param, $longitud_param) {
             try {
                 $radioTerrestre = CustomConstants::RADIO_TERRESTRE; // Radio ecuatorial en metros.
                 $db = new Conexion();
 
-                $sql = 'SELECT * FROM estaciones WHERE id=:id';
-                $statement = $db->prepare($sql);
-                $statement->bindValue(':id', $idEstacion);
-                $statement->execute();
-                if ($statement->rowCount() > 0) {
-                    // =====================================================================
-                    // CONSULTA PARA OBTENER LA ESTACIÓN MÁS CERCANA HACIENDO USO DE LA FÓRMULA
-                    // DE HAVERSINE PARA EL CÁLCULO DE DISTANCIA.
-                    $sql = 
-                    'SELECT 
-                    *, 
-                    2 * :radioTerrestre * (
-                                        asin( sqrt(
-                                                       pow(
-                                                            sin(
-                                                                   (radians(latitud) - radians(:lat))/2
-                                                            )
-                                                        , 2) +
-                                                     (
-                                                         cos(radians(:lat)) *
-                                                         cos(radians(latitud)) *
-                                                         pow(
-                                                                 sin(
-                                                                      (radians(longitud) - radians(:long))/2
-                                                               )
-                                                          , 2)
-                                                      )
-                                               ) 
-                                         )
-                                    ) AS distancia
-                    FROM
-                        estaciones
-                    WHERE
-                        id!=:id
-                    ORDER BY distancia, id ASC
-                    LIMIT 1';
-                    // =====================================================================
+                //=========================================================================================
+                // Obtención de información de la estación o coordenadas, dependiendo los parámetros recibidos.
+
+                // Si se recibe un id se asume que se quiere conocer la estación más cercana a la estación
+                // con dicho id (ignorando si se recibieron o no latitud_param y longitud_param).
+                if(isset($idEstacion) && ($idEstacion !== "")) {
+                    $sql = 'SELECT * FROM estaciones WHERE id=:id';
                     $statement = $db->prepare($sql);
-                    $statement->bindValue(':radioTerrestre', $radioTerrestre);
-                    $statement->bindValue(':lat', $latitud);
-                    $statement->bindValue(':long', $longitud);
                     $statement->bindValue(':id', $idEstacion);
                     $statement->execute();
-                    if($statement->rowCount() > 0) {
+                    if ($statement->rowCount() > 0) {
                         $result = $statement->fetch(PDO::FETCH_ASSOC);
-                        $result['distancia'] = strval(round($result['distancia'], 6));
-                        if ($result['distancia'] > 1000) {// Si se supera el kilómetro
-                            $result['distancia'] = strval(round($result['distancia'] / 1000, 6)); // Se convierte a kilómetro
-                            $result['unidadDistancia'] = 'km';
-                        } else {
-                            $result['unidadDistancia'] = 'm';
-                        }
-                        return $result;
+                        $id = $result['id'];
+                        // Se usarán las coordenadas de la estación con el id recibido.
+                        $latitud = $result['latitud'];
+                        $longitud = $result['longitud'];
                     } else {
                         $message = array();
                         $message[] = '404 Not Found';
-                        $message[] = 'no se encontraron otras estaciones';
-                        throw new Exception(implode(':', $message));    
+                        $message[] = 'id no registrado';
+                        throw new Exception(implode(':', $message));
                     }
+                // En caso de no recibir id, se pasa a comprobar si se recibieron coordenadas; si es así, se
+                // asume que se quiere conocer la estación más cercana a un punto de coordenadas cualquiera.
+                } elseif (isset($latitud_param) && ($latitud_param !== "") && isset($longitud_param) && ($longitud_param !== "")) {
+                    // el id que se agregará al parámetro de la consulta se asigna como cadena vacía, para que no
+                    // concuerde con ningún id de estación registrado y por lo tanto no afecte el resultado.
+                    $id = "";
+                    // Se usarán las coordenadas recibidas.
+                    $latitud = $latitud_param;
+                    $longitud = $longitud_param;
+                } else {
+                    // ERROR DE PETICIÓN
+                    $message = array();
+                    $message[] = '400 Bad Request';
+                    $message[] = "no se recibio id ni coordenadas (latitud y longitud)";
+                    throw new Exception(implode(':', $message));
+                }
+                //=========================================================================================
+                // =====================================================================
+                // CONSULTA PARA OBTENER LA ESTACIÓN MÁS CERCANA HACIENDO USO DE LA FÓRMULA
+                // DE HAVERSINE PARA EL CÁLCULO DE DISTANCIA.
+                $sql = 
+                'SELECT 
+                *, 
+                2 * :radioTerrestre * (
+                                    asin( sqrt(
+                                                    pow(
+                                                        sin(
+                                                                (radians(latitud) - radians(:lat))/2
+                                                        )
+                                                    , 2) +
+                                                    (
+                                                        cos(radians(:lat)) *
+                                                        cos(radians(latitud)) *
+                                                        pow(
+                                                                sin(
+                                                                    (radians(longitud) - radians(:long))/2
+                                                            )
+                                                        , 2)
+                                                    )
+                                            ) 
+                                        )
+                                ) AS distancia
+                FROM
+                    estaciones
+                WHERE
+                    id!=:id
+                ORDER BY distancia, id ASC
+                LIMIT 1';
+                // =====================================================================
+                $statement = $db->prepare($sql);
+                $statement->bindValue(':radioTerrestre', $radioTerrestre);
+                $statement->bindValue(':lat', $latitud);
+                $statement->bindValue(':long', $longitud);
+                $statement->bindValue(':id', $id);
+                $statement->execute();
+                if($statement->rowCount() > 0) {
+                    $result = $statement->fetch(PDO::FETCH_ASSOC);
+                    $result['distancia'] = strval(round($result['distancia'], 6));
+                    if ($result['distancia'] > 1000) {// Si se supera el kilómetro
+                        $result['distancia'] = strval(round($result['distancia'] / 1000, 6)); // Se convierte a kilómetro
+                        $result['unidadDistancia'] = 'km';
+                    } else {
+                        $result['unidadDistancia'] = 'm';
+                    }
+                    return $result;
                 } else {
                     $message = array();
                     $message[] = '404 Not Found';
-                    $message[] = 'id no registrado';
-                    throw new Exception(implode(':', $message));
+                    $message[] = 'no se encontraron otras estaciones';
+                    throw new Exception(implode(':', $message));    
                 }
             } catch (PDOException $e) {
                 throw new PDOException($e->getMessage());
