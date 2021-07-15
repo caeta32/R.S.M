@@ -147,116 +147,97 @@
             $rumbo = Utils::generarRumboAleatorio();
             switch ($localidad) {
                 case 'Montevideo' :
-                    // $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_1);
-                    $distancia = CustomConstants::DIST_MAX_1;
+                    $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_1);
                     $latitud_inicio = CustomConstants::INICIO_LAT_MONTEVIDEO;
                     $longitud_inicio = CustomConstants::INICIO_LONG_MONTEVIDEO;
                     break;
                 case 'Canelones' :
-                    // $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_2);
-                    $distancia = CustomConstants::DIST_MAX_2;
+                    $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_2);
                     $latitud_inicio = CustomConstants::INICIO_LAT_CANELONES;
                     $longitud_inicio = CustomConstants::INICIO_LONG_CANELONES;
                     break;
                 case 'Rivera' :
-                    // $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_2);
-                    $distancia = CustomConstants::DIST_MAX_2;
+                    $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_2);
                     $latitud_inicio = CustomConstants::INICIO_LAT_RIVERA;
                     $longitud_inicio = CustomConstants::INICIO_LONG_RIVERA;
                     break;
                 case 'Colonia' :
-                    // $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_2);
-                    $distancia = CustomConstants::DIST_MAX_2;
+                    $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_2);
                     $latitud_inicio = CustomConstants::INICIO_LAT_COLONIA;
                     $longitud_inicio = CustomConstants::INICIO_LONG_COLONIA;
                     break;
                 case 'San José' :
-                    // $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_2);
-                    $distancia = CustomConstants::DIST_MAX_2;
+                    $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_2);
                     $latitud_inicio = CustomConstants::INICIO_LAT_SAN_JOSE;
                     $longitud_inicio = CustomConstants::INICIO_LONG_SAN_JOSE;
                     break;
                 case 'Flores' :
-                    // $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_2);
-                    $distancia = CustomConstants::DIST_MAX_2;
+                    $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_2);
                     $latitud_inicio = CustomConstants::INICIO_LAT_FLORES;
                     $longitud_inicio = CustomConstants::INICIO_LONG_FLORES;
                     break;
                 case 'Maldonado' :
-                    // $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_2);
-                    $distancia = CustomConstants::DIST_MAX_2;
+                    $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_2);
                     $latitud_inicio = CustomConstants::INICIO_LAT_MALDONADO;
                     $longitud_inicio = CustomConstants::INICIO_LONG_MALDONADO;
                     break;
                 case 'Rocha' :
-                    // $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_3);
-                    $distancia = CustomConstants::DIST_MAX_3;
+                    $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_3);
                     $latitud_inicio = CustomConstants::INICIO_LAT_ROCHA;
                     $longitud_inicio = CustomConstants::INICIO_LONG_ROCHA;
                     break;
                 case 'Treinta y Tres' :
-                    // $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_3);
-                    $distancia = CustomConstants::DIST_MAX_3;
+                    $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_3);
                     $latitud_inicio = CustomConstants::INICIO_LAT_TREINTA_Y_TRES;
                     $longitud_inicio = CustomConstants::INICIO_LONG_TREINTA_Y_TRES;
                     break;
                 case 'Cerro Largo' :
-                    // $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_3);
-                    $distancia = CustomConstants::DIST_MAX_3;
+                    $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_3);
                     $latitud_inicio = CustomConstants::INICIO_LAT_CERRO_LARGO;
                     $longitud_inicio = CustomConstants::INICIO_LONG_CERRO_LARGO;
                     break;
                 case 'Río Negro' :
-                    // $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_3);
-                    $distancia = CustomConstants::DIST_MAX_3;
+                    $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_3);
                     $latitud_inicio = CustomConstants::INICIO_LAT_RIO_NEGRO;
                     $longitud_inicio = CustomConstants::INICIO_LONG_RIO_NEGRO;
                     break;
                 case 'Soriano' :
-                    // $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_3);
-                    $distancia = CustomConstants::DIST_MAX_3;
+                    $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_3);
                     $latitud_inicio = CustomConstants::INICIO_LAT_SORIANO;
                     $longitud_inicio = CustomConstants::INICIO_LONG_SORIANO;
                     break;
                 case 'Durazno' :
-                    // $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_3);
-                    $distancia = CustomConstants::DIST_MAX_3;
+                    $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_3);
                     $latitud_inicio = CustomConstants::INICIO_LAT_DURAZNO;
                     $longitud_inicio = CustomConstants::INICIO_LONG_DURAZNO;
                     break;
                 case 'Lavalleja' :
-                    // $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_3);
-                    $distancia = CustomConstants::DIST_MAX_3;
+                    $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_3);
                     $latitud_inicio = CustomConstants::INICIO_LAT_LAVALLEJA;
                     $longitud_inicio = CustomConstants::INICIO_LONG_LAVALLEJA;
                     break;
                 case 'Tacuarembó' :
-                    // $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_4);
-                    $distancia = CustomConstants::DIST_MAX_4;
+                    $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_4);
                     $latitud_inicio = CustomConstants::INICIO_LAT_TACUAREMBO;
                     $longitud_inicio = CustomConstants::INICIO_LONG_TACUAREMBO;
                     break;
                 case 'Artigas' :
-                    // $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_4);
-                    $distancia = CustomConstants::DIST_MAX_4;
+                    $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_4);
                     $latitud_inicio = CustomConstants::INICIO_LAT_ARTIGAS;
                     $longitud_inicio = CustomConstants::INICIO_LONG_ARTIGAS;
                     break;
                 case 'Salto' :
-                    // $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_4);
-                    $distancia = CustomConstants::DIST_MAX_4;
+                    $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_4);
                     $latitud_inicio = CustomConstants::INICIO_LAT_SALTO;
                     $longitud_inicio = CustomConstants::INICIO_LONG_SALTO;
                     break;
                 case 'Paysandú' :
-                    // $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_4);
-                    $distancia = CustomConstants::DIST_MAX_4;
+                    $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_4);
                     $latitud_inicio = CustomConstants::INICIO_LAT_PAYSANDU;
                     $longitud_inicio = CustomConstants::INICIO_LONG_PAYSANDU;
                     break;
                 case 'Florida' :
-                    // $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_4);
-                    $distancia = CustomConstants::DIST_MAX_4;
+                    $distancia = Utils::generarDistanciaAleatoria(1, CustomConstants::DIST_MAX_4);
                     $latitud_inicio = CustomConstants::INICIO_LAT_FLORIDA;
                     $longitud_inicio = CustomConstants::INICIO_LONG_FLORIDA;
                     break;
