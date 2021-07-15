@@ -1,13 +1,8 @@
 <?php
     class Conexion extends PDO {
-        private $hostBd = 'localhost';
-        private $nombreBd = 'informacionCentralizada';
-        private $usuarioBd = 'root';
-        private $passwordBd = '';
-
         public function __construct() {
             try {
-                parent::__construct('mysql:host=' . $this->hostBd . ';dbname=' . $this->nombreBd . ';charset=utf8', $this->usuarioBd, $this->passwordBd, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+                parent::__construct('mysql:host=' . CustomConstants::HOST_DATA_BASE . ';dbname=' . CustomConstants::NAME_DATA_BASE . ';charset=utf8', CustomConstants::USER_DATA_BASE, CustomConstants::PASSWORD_DATA_BASE, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
             } catch (PDOException $e) {
                 throw new PDOException($e->getMessage());
                 exit;

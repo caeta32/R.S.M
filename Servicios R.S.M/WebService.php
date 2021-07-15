@@ -80,6 +80,11 @@
 // FIN Insertar Nuevos Registros de un Usuario -------------
 
 // Insertar Nuevos Registros de una Estación ------------
+        /**
+         * Se ingresa una nueva estación, donde su id es generado automáticamente
+         * y la ubicación geográfica en coordenadas decimales es generada 
+         * aleatoriamente dentro de la localidad recibida como parámetro.
+         */
         public function ingresarEstacion($id, $nombre, $localidad) {
             try {
                 // Se conecta a la base de datos.
@@ -91,27 +96,27 @@
                 $statement->bindValue(':nombre', $nombre);
                 $statement->execute();
                 if ($statement->rowCount() === 0) {
-                    // En caso de recibir el id vacío, se le asigna null para que
-                    // se auto-incremente por el gestor de la BD.
-                    if ($id === "")
+                    /**
+                     * En caso de recibir el id con algún valor (o vacío) se le asignará
+                     * null por defecto para que se auto-incremente por el gestor de la base
+                     * de datos, debido a que éste debe ser generado automáticamente.
+                     */
+                    if (isset($id))
                         $id = null;
                     
-                    // CONTROL
-                    if ($nombre === "" || $localidad === "") {
-                        $message = array();
-                        $message[] = '422 Unprocessable Entity';
-                        $message[] = 'Error: nombre y localidad no pueden ser cadenas vacias';
-                        throw new Exception(implode(':', $message));
-                    }
-                        
+                    // CÁLCULO DEL PUNTO DE COORDENADAS ALEATORIO (Punto de destino).
+                    $puntoDestino = Utils::coordenadasAleatoriasDentroDe($localidad);
+
                     // Se almacena la sentencia.
-                    $sql = 'INSERT INTO estaciones (id, nombre, localidad) VALUES (:id, :nombre, :localidad)';
+                    $sql = 'INSERT INTO estaciones (id, nombre, localidad, longitud, latitud) VALUES (:id, :nombre, :localidad, :longitud, :latitud)';
                     // Se prepara la sentencia.
                     $statement = $db->prepare($sql);
                     // Se pasan los parámetros a la sentencia.
                     $statement->bindValue(':id', $id);
                     $statement->bindValue(':nombre', $nombre);
                     $statement->bindValue(':localidad', $localidad);
+                    $statement->bindValue(':longitud', $puntoDestino['longitud']);
+                    $statement->bindValue(':latitud', $puntoDestino['latitud']);
                     // Se ejecuta la sentencia.
                     $statement->execute();
                     // Finalización exitosa.
@@ -134,11 +139,13 @@
 // FIN Insertar Nuevos Registros de una Estación -------------
 
 // Actualizar datos de un usuario ------------
-        // $id puede ser el email o identificador único del usuario.
-        // Se asume que $id está definido ya que es el único parámetro realmente necesario para
-        // poder realizar la actualización.
-        // Los parámetros que no lleguen definidos, se asumirá que no se quieren actualizar,
-        // por lo que se mantendrá el valor que estaba registrado previamente, a excepción del id.
+        /**
+         * $id puede ser el email o identificador único del usuario.
+         * Se asume que $id está definido ya que es el único parámetro realmente necesario para
+         * poder realizar la actualización.
+         * Los parámetros que no lleguen definidos, se asumirá que no se quieren actualizar,
+         * por lo que se mantendrá el valor que estaba registrado previamente, a excepción del id.
+         */
         public function actualizarDatosUsuario($id, $nombre, $contrasenia, $nivelAcceso) {
             try {
                 // Se conecta a la base de datos.
@@ -154,28 +161,19 @@
                     // Se agregan los atributos que se quieren actualizar.
                     $quantityDefinedParams = 0;
                     if(isset($nombre)) {
-                        // Si ya se agregó uno antes, ingresa una coma.
-                        if($quantityDefinedParams > 0)
-                            $sql .= ', ';
-                        $quantityDefinedParams += 1;
-                        $sql .= 'nombre=:nombre';
+                        $sql = Utils::addColValueNameToQuery($sql, 'nombre', $quantityDefinedParams);
                     }
                     if(isset($contrasenia)) {
-                        // Si ya se agregó uno antes, ingresa una coma.
-                        if($quantityDefinedParams > 0)
-                            $sql .= ', ';
-                        $quantityDefinedParams += 1;
-                        $sql .= 'contrasenia=:contrasenia';
+                        $sql = Utils::addColValueNameToQuery($sql, 'contrasenia', $quantityDefinedParams);
                     }
                     if(isset($nivelAcceso)) {
-                        // Si ya se agregó uno antes, ingresa una coma.
-                        if($quantityDefinedParams > 0)
-                            $sql .= ', ';
-                        $quantityDefinedParams += 1;
-                        $sql .= 'nivelAcceso=:nivelAcceso';
+                        $sql = Utils::addColValueNameToQuery($sql, 'nivelAcceso', $quantityDefinedParams);
                     }
-                    // Si habían parámetros para actualizar definidos, entonces
-                    // hay datos para actualizar, por lo que se ejecuta la sentencia.
+                    /**
+                     * Si habían parámetros para actualizar definidos, entonces
+                     * hay datos para actualizar, por lo que se continúa con las
+                     * operaciones y se ejecuta la sentencia.
+                     */
                     if($quantityDefinedParams > 0) {
                         $sql .= ' WHERE email=:id OR idReducido=:id';
                         // Se prepara la sentencia.
@@ -220,11 +218,13 @@
 // FIN Actualizar datos de un usuario ------------
 
 // Actualizar datos de una estación ------------
-        // Se asume que $id está definido ya que es el único parámetro realmente necesario para
-        // poder realizar la actualización.
-        // Los parámetros que no lleguen definidos, se asumirá que no se quieren actualizar,
-        // por lo que se mantendrá el valor que estaba registrado previamente, a excepción del id.
-        public function actualizarEstacion($id, $nombre, $localidad) {
+        /**
+         * Se asume que $id está definido ya que es el único parámetro realmente necesario para
+         * poder realizar la actualización.
+         * Los parámetros que no lleguen definidos o lleguen vacíos, se asumirá que no se quieren actualizar,
+         * por lo que se mantendrá el valor que estaba registrado previamente, a excepción del id.
+         */
+        public function actualizarEstacion($id, $nombre, $localidad, $longitud, $latitud) {
             try {
                 // Se conecta a la base de datos.
                 $db = new Conexion();
@@ -236,21 +236,23 @@
                 if ($statement->rowCount() > 0) {
                     // Sentencia.
                     $sql = 'UPDATE estaciones SET ';
+
                     // Se agregan los atributos que se quieren actualizar.
+
+                    // La cantidad de parámetros definidos es modificada por referencia por la función
+                    // Utils::addColValueNameToQuery().
                     $quantityDefinedParams = 0;
-                    if(isset($nombre)) {
-                        // Si ya se agregó uno antes, ingresa una coma.
-                        if($quantityDefinedParams > 0)
-                            $sql .= ', ';
-                        $quantityDefinedParams += 1;
-                        $sql .= 'nombre=:nombre';
+                    if(isset($nombre) && ($nombre !== "")) {
+                        $sql = Utils::addColValueNameToQuery($sql, 'nombre', $quantityDefinedParams);
                     }
-                    if(isset($localidad)) {
-                        // Si ya se agregó uno antes, ingresa una coma.
-                        if($quantityDefinedParams > 0)
-                            $sql .= ', ';
-                        $quantityDefinedParams += 1;
-                        $sql .= 'localidad=:localidad';
+                    if(isset($localidad) && ($localidad !== "")) {
+                        $sql = Utils::addColValueNameToQuery($sql, 'localidad', $quantityDefinedParams);
+                    }
+                    if(isset($longitud) && ($longitud !== "")) {
+                        $sql = Utils::addColValueNameToQuery($sql, 'longitud', $quantityDefinedParams);
+                    }
+                    if(isset($latitud) && ($latitud !== "")) {
+                        $sql = Utils::addColValueNameToQuery($sql, 'latitud', $quantityDefinedParams);
                     }
                     // Si habían parámetros para actualizar definidos, entonces
                     // hay datos para actualizar, por lo que se ejecuta la sentencia.
@@ -261,11 +263,14 @@
                         // Se pasan los parámetros a la sentencia.
                         $statement->bindValue(':id', $id);
                         
-                        if(isset($nombre)) 
+                        if(isset($nombre) && ($nombre !== "")) 
                             $statement->bindValue(':nombre', $nombre);
-                        if(isset($localidad)) 
+                        if(isset($localidad) && ($localidad !== "")) 
                             $statement->bindValue(':localidad', $localidad);
-                        
+                        if(isset($longitud) && ($longitud !== "")) 
+                            $statement->bindValue(':longitud', $longitud);
+                        if(isset($latitud) && ($latitud !== "")) 
+                            $statement->bindValue(':latitud', $latitud);
 
                         // Se ejecuta la sentencia.
                         $statement->execute();
@@ -297,7 +302,9 @@
 // FIN Actualizar datos de una estación ------------
 
 // Eliminar datos de una estación ------------
-        // Se asume que $id está definido.
+        /** 
+         * Se asume que $id está definido.
+         */
         public function eliminarDatosDeEstacion($id) {
             try {
                 // Se conecta a la base de datos.
@@ -341,7 +348,9 @@
 // FIN Eliminar datos de una estación ------------
 
 // Eliminar Usuario ------------
-        // Se asume que $email está definido.
+        /**
+         * Se asume que $email está definido.
+         */
         public function eliminarUsuario($email) {
             try {
                 // Se conecta a la base de datos.
@@ -385,7 +394,9 @@
 // FIN Eliminar Usuario ------------
 
 // Eliminar Estación ------------
-        // Se asume que $id está definido.
+        /**
+         * Se asume que $id está definido.
+         */
         public function eliminarEstacion($id) {
             try {
                 // Se conecta a la base de datos.
@@ -596,6 +607,103 @@
             }
         }
 // FIN Ver todos los datos de todas las estaciones -------------
+
+// Obtener estaciones más cercanas a un punto de coordenadas geográficas Latitud/Longitud. ----------------------
+        /**
+         * En caso de que las estaciones más cercanas sean más de una (tengan igual distancia 
+         * (más corta) desde las coordenadas recibidas) devuelve la que tenga el id menor.
+         * 
+         * Se retorna la distancia con 6 decimales como máximo y en metros mientras no se 
+         * superen los mil metros, en caso de superarse, se devuelve en kilómetros.
+         * 
+         * Se asumen coordenadas de latitud y longitud en grados decimales así como el 
+         * uso del radio ecuatorial terrestre, todo basado en el sistema de coordenadas geográficas 
+         * WGS 84.
+         * @see https://es.wikipedia.org/wiki/WGS84
+         * @see https://docs.qgis.org/3.10/es/docs/gentle_gis_introduction/coordinate_reference_systems.html
+         * Se utiliza la fórmula de Haversine, los márgenes de error esperados son entre 0,3% y 0,55%.
+         * @see http://www.movable-type.co.uk/scripts/latlong.html
+         * @see https://en.wikipedia.org/wiki/Haversine_formula
+         */
+        public function estacionMasCercana($idEstacion, $latitud, $longitud) {
+            try {
+                $radioTerrestre = CustomConstants::RADIO_TERRESTRE; // Radio ecuatorial en metros.
+                $db = new Conexion();
+
+                $sql = 'SELECT * FROM estaciones WHERE id=:id';
+                $statement = $db->prepare($sql);
+                $statement->bindValue(':id', $idEstacion);
+                $statement->execute();
+                if ($statement->rowCount() > 0) {
+                    // =====================================================================
+                    // CONSULTA PARA OBTENER LA ESTACIÓN MÁS CERCANA HACIENDO USO DE LA FÓRMULA
+                    // DE HAVERSINE PARA EL CÁLCULO DE DISTANCIA.
+                    $sql = 
+                    'SELECT 
+                    *, 
+                    2 * :radioTerrestre * (
+                                        asin( sqrt(
+                                                       pow(
+                                                            sin(
+                                                                   (radians(latitud) - radians(:lat))/2
+                                                            )
+                                                        , 2) +
+                                                     (
+                                                         cos(radians(:lat)) *
+                                                         cos(radians(latitud)) *
+                                                         pow(
+                                                                 sin(
+                                                                      (radians(longitud) - radians(:long))/2
+                                                               )
+                                                          , 2)
+                                                      )
+                                               ) 
+                                         )
+                                    ) AS distancia
+                    FROM
+                        estaciones
+                    WHERE
+                        id!=:id
+                    ORDER BY distancia, id ASC
+                    LIMIT 1';
+                    // =====================================================================
+                    $statement = $db->prepare($sql);
+                    $statement->bindValue(':radioTerrestre', $radioTerrestre);
+                    $statement->bindValue(':lat', $latitud);
+                    $statement->bindValue(':long', $longitud);
+                    $statement->bindValue(':id', $idEstacion);
+                    $statement->execute();
+                    if($statement->rowCount() > 0) {
+                        $result = $statement->fetch(PDO::FETCH_ASSOC);
+                        $result['distancia'] = strval(round($result['distancia'], 6));
+                        if ($result['distancia'] > 1000) {// Si se supera el kilómetro
+                            $result['distancia'] = strval(round($result['distancia'] / 1000, 6)); // Se convierte a kilómetro
+                            $result['unidadDistancia'] = 'km';
+                        } else {
+                            $result['unidadDistancia'] = 'm';
+                        }
+                        return $result;
+                    } else {
+                        $message = array();
+                        $message[] = '404 Not Found';
+                        $message[] = 'no se encontraron otras estaciones';
+                        throw new Exception(implode(':', $message));    
+                    }
+                } else {
+                    $message = array();
+                    $message[] = '404 Not Found';
+                    $message[] = 'id no registrado';
+                    throw new Exception(implode(':', $message));
+                }
+            } catch (PDOException $e) {
+                throw new PDOException($e->getMessage());
+                exit;
+            } catch (Exception $e) {
+                throw new Exception($e->getMessage());
+                exit;
+            }
+        }
+// FIN Obtener estaciones más cercanas a un punto de coordenadas geográficas Latitud/Longitud. ----------------------
 
     }
 ?>
