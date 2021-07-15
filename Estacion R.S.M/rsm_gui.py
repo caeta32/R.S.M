@@ -62,6 +62,7 @@ API_KEY = "92ecbd09b28050e849ee353088902383"
 BASE_URL = "https://api.openweathermap.org/data/2.5/weather?"
 
 
+
 font = ("Arial, 25")
 font2 = ("Arial, 20")
 temas = ['Black', 'BlueMono', 'BluePurple', 'BrightColors', 'BrownBlue', 'Dark', 'Dark2', 'DarkAmber', 'DarkBlack', 'DarkBlack1', 'DarkBlue', 'DarkBlue1', 'DarkBlue10', 'DarkBlue11', 'DarkBlue12', 'DarkBlue13', 'DarkBlue14', 'DarkBlue15', 'DarkBlue16', 'DarkBlue17', 'DarkBlue2', 'DarkBlue3', 'DarkBlue4', 'DarkBlue5', 'DarkBlue6', 'DarkBlue7', 'DarkBlue8', 'DarkBlue9', 'DarkBrown', 'DarkBrown1', 'DarkBrown2', 'DarkBrown3', 'DarkBrown4', 'DarkBrown5', 'DarkBrown6', 'DarkGreen', 'DarkGreen1', 'DarkGreen2', 'DarkGreen3', 'DarkGreen4', 'DarkGreen5', 'DarkGreen6', 'DarkGrey', 'DarkGrey1', 'DarkGrey2', 'DarkGrey3', 'DarkGrey4', 'DarkGrey5', 'DarkGrey6', 'DarkGrey7', 'DarkPurple', 'DarkPurple1', 'DarkPurple2', 'DarkPurple3', 'DarkPurple4', 'DarkPurple5', 'DarkPurple6', 'DarkRed', 'DarkRed1', 'DarkRed2', 'DarkTanBlue', 'DarkTeal', 'DarkTeal1', 'DarkTeal10', 'DarkTeal11', 'DarkTeal12', 'DarkTeal2', 'DarkTeal3', 'DarkTeal4', 'DarkTeal5', 'DarkTeal6', 'DarkTeal7', 'DarkTeal8', 'DarkTeal9', 'Default', 'Default1', 'DefaultNoMoreNagging', 'Green', 'GreenMono', 'GreenTan', 'HotDogStand', 'Kayak', 'LightBlue', 'LightBlue1', 'LightBlue2', 'LightBlue3', 'LightBlue4', 'LightBlue5', 'LightBlue6', 'LightBlue7', 'LightBrown', 'LightBrown1', 'LightBrown10', 'LightBrown11', 'LightBrown12', 'LightBrown13', 'LightBrown2', 'LightBrown3', 'LightBrown4', 'LightBrown5', 'LightBrown6', 'LightBrown7', 'LightBrown8', 'LightBrown9', 'LightGray1', 'LightGreen', 'LightGreen1', 'LightGreen10', 'LightGreen2', 'LightGreen3', 'LightGreen4', 'LightGreen5', 'LightGreen6', 'LightGreen7', 'LightGreen8', 'LightGreen9', 'LightGrey', 'LightGrey1', 'LightGrey2', 'LightGrey3', 'LightGrey4', 'LightGrey5', 'LightGrey6', 'LightPurple', 'LightTeal', 'LightYellow', 'Material1', 'Material2', 'NeutralBlue', 'Purple', 'Reddit', 'Reds', 'SandyBeach', 'SystemDefault', 'SystemDefault1', 'SystemDefaultForReal', 'Tan', 'TanBlue', 'TealMono', 'Topanga']
@@ -92,11 +93,14 @@ def make_ventana_menu(nombre, localidad):
     lon = location.longitude
     URL = BASE_URL + "q=" + CIUDAD + "&appid=" + API_KEY
     URL_RAD_SOLAR = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly,daily,alerts&appid={API_KEY}'
+    URL_LLUVIA = f"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,daily,alerts&appid={API_KEY}"
     response = requests.get(URL)
     response_rad = requests.get(URL_RAD_SOLAR)
+    response_lluvia = requests.get(URL_LLUVIA)
     if response.status_code == 200:
         data = response.json()
         radiacion = response_rad.json()
+        datos_lluvia = response_lluvia.json()
         list_rad = radiacion['current']
         global uv_indice
         uv_indice = list_rad['uvi']
@@ -110,6 +114,16 @@ def make_ventana_menu(nombre, localidad):
         presion = main['pressure']
         global viento
         viento = wind['speed']
+        lluvia = datos_lluvia["hourly"]
+        global precipitacion
+        i = 0
+        while i < len(lluvia):
+            try:
+                precipitacion = lluvia[i]["rain"]["1h"]
+                i = 999999
+            except KeyError:
+                precipitacion = 0
+            i += 1
         global cardinal
         direccionViento = wind['deg']
         if 181 <= direccionViento <= 269:
@@ -141,6 +155,7 @@ def make_ventana_menu(nombre, localidad):
     [sg.Text(f"Humedad: {humedad}%")],
     [sg.Text(f"Presion Atmosferica: {presion} HPa")],
     [sg.Text(f"Viento Promedio: {int(viento * 3.6)} km/h")],
+    [sg.Text(f"Precipitacion: {int(precipitacion * 100)} %")],
     [sg.Text(f"Direccion del Viento: {cardinal}")],
     [sg.Text(f"Indide UV: {uv_indice}")],
     [sg.Button("Actualizar")]
@@ -157,11 +172,14 @@ def guardar_en_log(nombre, ciudad):
             lon = location.longitude
             URL = BASE_URL + "q=" + ciudad + "&appid=" + API_KEY
             URL_RAD_SOLAR = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly,daily,alerts&appid={API_KEY}'
+            URL_LLUVIA = f"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,daily,alerts&appid={API_KEY}"
             response = requests.get(URL)
             response_rad = requests.get(URL_RAD_SOLAR)
+            response_lluvia = requests.get(URL_LLUVIA)
             if response.status_code == 200:
                 data = response.json()
                 radiacion = response_rad.json()
+                datos_lluvia = response_lluvia.json()
                 list_rad = radiacion['current']
                 global uv_indice
                 uv_indice = list_rad['uvi']
@@ -175,6 +193,16 @@ def guardar_en_log(nombre, ciudad):
                 presion = main['pressure']
                 global viento
                 viento = wind['speed']
+                lluvia = datos_lluvia["hourly"]
+                global precipitacion
+                i = 0
+                while i < len(lluvia):
+                    try:
+                        precipitacion = lluvia[i]["rain"]["1h"]
+                        i = 999999
+                    except KeyError:
+                        precipitacion = 0
+                    i += 1
                 global cardinal
                 direccionViento = wind['deg']
                 if 181 <= direccionViento <= 269:
@@ -207,7 +235,7 @@ def guardar_en_log(nombre, ciudad):
                     'direccionViento':cardinal,
                     'radiacionSolar':10,
                     'radiacionIndiceUV':uv_indice,
-                    'indicePluviometrico':0,
+                    'indicePluviometrico':precipitacion,
                     'idEstacion':idEstacion,
                     'accion':'nuevaInfoEstacion'}
                 session = requests.Session()
