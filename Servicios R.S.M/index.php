@@ -1,4 +1,5 @@
 <?php
+    include './CustomConstants.php';
     include './Utils.php';
     include './WebService.php';
 
@@ -82,6 +83,18 @@
                             header('HTTP/1.1 200 OK');
                         } else {
                             $response['error'] = 'id no recibido';
+                            $response['status'] = 400;
+                            header('HTTP/1.1 400 Bad Request');
+                        }
+                        break;
+                //------------------------------------------------
+                    case 'obtenerEstacionMasCercana' :
+                        if(isset($_GET['id']) && ($_GET['id'] !== "") && isset($_GET['longitud']) && ($_GET['longitud'] !== "") && isset($_GET['latitud']) && ($_GET['latitud'] !== "")) {
+                            $response['result'] = $ws->estacionMasCercana($_GET['id'], $_GET['latitud'], $_GET['longitud']);
+                            $response['status'] = 200;
+                            header('HTTP/1.1 200 OK');
+                        } else {
+                            $response['error'] = 'id, longitud o latitud no recibidos';
                             $response['status'] = 400;
                             header('HTTP/1.1 400 Bad Request');
                         }
@@ -191,16 +204,20 @@
                         break;
                 // ---------------------------------------------------------
                     case 'nuevaEstacion' :
-                        // Se insertan los registros recibiendo los parámetros.
-                        // En caso de no recibir uno de los parámetros, ingresará el dato de todos modos, 
-                        // aunque en el cuerpo de la respuesta se devolverá una advertencia, a excepción del id, el cual es auto generado.
-                        $response['result'] = $ws->ingresarEstacion($_POST['id'], $_POST['nombre'], $_POST['localidad']);
+                        if (isset($_POST['nombre']) && ($_POST['nombre'] !== "") && isset($_POST['localidad']) && ($_POST['localidad'] !== "")) {
+                            // Se insertan los registros recibiendo los parámetros.
+                            $response['result'] = $ws->ingresarEstacion($_POST['id'], $_POST['nombre'], $_POST['localidad']);
 
-                        if ($undefinedParams = Utils::undefinedParams_estaciones($_POST['nombre'], $_POST['localidad'])) {
-                            $response['warning'] = 'Parametros indefinidos: ' . implode(', ', $undefinedParams);
+                            if ($undefinedParams = Utils::undefinedParams_estaciones($_POST['nombre'], $_POST['localidad'], $_POST['longitud'], $_POST['latitud'])) {
+                                $response['warning'] = 'Parametros indefinidos: ' . implode(', ', $undefinedParams);
+                            }
+                            $response['status'] = 200;
+                            header('HTTP/1.1 200 OK');
+                        } else {
+                            $response['error'] = 'nombre o localidad no recibidos';
+                            $response['status'] = 400;
+                            header('HTTP/1.1 400 Bad Request');
                         }
-                        $response['status'] = 200;
-                        header('HTTP/1.1 200 OK');
                         break;
                 // ---------------------------------------------------------
                     default :
@@ -262,7 +279,7 @@
                 // ---------------------------------------------------------
                     case 'actualizarEstacion' :
                         if(isset($_GET['id']) && ($_GET['id'] !== "")) {
-                            $response['result'] = $ws->actualizarEstacion($_GET['id'], $_GET['nombre'], $_GET['localidad']);
+                            $response['result'] = $ws->actualizarEstacion($_GET['id'], $_GET['nombre'], $_GET['localidad'], $_GET['longitud'], $_GET['latitud']);
                             $response['status'] = 200;
                             header('HTTP/1.1 200 OK');
                         } else {

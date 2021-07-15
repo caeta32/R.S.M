@@ -29,18 +29,18 @@
                 <a class="nav-link" href="/"  style="color: #FFFFFF">Inicio</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{'/estaciones'}}"  style="color: #FFFFFF">Estaciones</a>
+                <a class="nav-link" href="{{url('/estaciones')}}"  style="color: #FFFFFF">Estaciones</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{'/formaparte'}}"  style="color: #FFFFFF">Forma Parte de la Red</a>
+                <a class="nav-link" href="{{url('/formaparte')}}"  style="color: #FFFFFF">Forma Parte de la Red</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{'/faq'}}"  style="color: #FFFFFF">Preguntas Frecuentes</a>
+                <a class="nav-link" href="{{url('/faq')}}"  style="color: #FFFFFF">Preguntas Frecuentes</a>
             </li>
         </ul>
     </div>
-    <a class="nav-link" href="{{'/login'}}" style="color: #DCAE52">Iniciar Sesion</a>
-    <a class="nav-link" href="{{'/registro'}}" style="color: #DCAE52; margin-right: 3%">Registrate</a>
+    <a class="nav-link" href="{{url('/login')}}" style="color: #DCAE52">Iniciar Sesion</a>
+    <a class="nav-link" href="{{url('/registro')}}" style="color: #DCAE52; margin-right: 3%">Registrate</a>
 
 </nav>
 

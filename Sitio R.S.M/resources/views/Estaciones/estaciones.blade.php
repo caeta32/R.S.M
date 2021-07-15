@@ -47,7 +47,7 @@
     </div>
 </div>
 
-<iframe src="{{'/mapa'}}"  marginwidth="0"
+<iframe src="{{url('/mapa')}}"  marginwidth="0"
         marginheight="0"style="right: 0; width: 83%; height: 94.72vh; position: absolute"></iframe>
 
 </div>

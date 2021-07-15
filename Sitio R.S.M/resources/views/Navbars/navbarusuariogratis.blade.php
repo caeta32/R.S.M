@@ -35,7 +35,7 @@ $nombreUsuario = Session::get('username');?>
                 <a class="nav-link" href="/"  style="color: #FFFFFF">Inicio</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{'/estaciones'}}"  style="color: #FFFFFF">Estaciones</a>
+                <a class="nav-link" href="{{url('/estaciones')}}"  style="color: #FFFFFF">Estaciones</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#"  style="color: #FFFFFF">Forma Parte de la Red</a>
@@ -46,7 +46,7 @@ $nombreUsuario = Session::get('username');?>
         </ul>
     </div>
     <a class="navbar-brand" href="#" style=" color: #DCAE52; font-size: large; margin-left: 1%; "><i class="fa fa-user-circle" aria-hidden="true" style="padding-right: 10%"></i><?php echo $nombreUsuario?></a>
-    <a class="nav-link" href="{{'/logout'}}" style="color: #DCAE52; margin-right: 3%; font-size: large">Salir</a>
+    <a class="nav-link" href="{{url('/logout')}}" style="color: #DCAE52; margin-right: 3%; font-size: large">Salir</a>
 
 </nav>
 
