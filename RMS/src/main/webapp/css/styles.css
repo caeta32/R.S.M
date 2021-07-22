@@ -1,0 +1,37 @@
+html {
+    color: honeydew !important;
+}
+
+a {
+    color: honeydew !important;
+}
+
+.body-index {
+    background-color: #254746;
+}
+
+.div-botones {
+        display: flex;
+        justify-content: space-around;
+}
+
+.boton-grafica {
+        width: 100%;
+        margin: 5px; /* or whatever you like */
+}
+
+.chartWrapper {
+    position: relative;
+}
+
+.chartWrapper > canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events:none;
+}
+
+.chartAreaWrapper {
+    width: 600px;
+    overflow-x: scroll;
+}

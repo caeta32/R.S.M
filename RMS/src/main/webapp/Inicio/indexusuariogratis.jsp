@@ -26,6 +26,9 @@
                 <a class="nav-link" href="../estaciones/estaciones.html" target="miIframe"  style="color: #FFFFFF">Estaciones</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="../graficos/menugraficos.jsp" target="miIframe"  style="color: #FFFFFF">Graficos</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="../formaparte-faq/formaparte.html" target="miIframe"  style="color: #FFFFFF">Forma Parte de la Red</a>
             </li>
             <li class="nav-item">
