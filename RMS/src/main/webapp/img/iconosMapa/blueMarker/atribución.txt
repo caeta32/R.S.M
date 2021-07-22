@@ -1,0 +1,5 @@
+Ejemplo: Páginas web, redes sociales, blogs, ebooks, newsletters, etc.
+
+Incluye el siguiente enlace en un sitio visible, cerca del lugar donde estés usando el recurso. Si no es posible, también puedes incluirlo en el pie de tu página web, blog, newsletter o en la sección de créditos.
+
+<div>Icons made by <a href="" title="Pause08">Pause08</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>

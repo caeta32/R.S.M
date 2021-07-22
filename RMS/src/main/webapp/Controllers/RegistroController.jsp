@@ -17,7 +17,7 @@ if(password.equals(passwordconfirmado)) {
 	String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
 
 	try{
-		URL url = new URL("http://localhost/server-central_JEE/ws/");
+		URL url = new URL("http://localhost/sitio-cliente_JEE/R.S.M/Servicios%20R.S.M/");
 		String postData = "email=" + email + "&nombre=" + nombre + "&apellido=" + apellido + "&nivelAcceso=a&contrasenia="+ hashed + "&accion=nuevoUsuario";
 		
 		URLConnection conn = url.openConnection();
@@ -40,6 +40,7 @@ if(password.equals(passwordconfirmado)) {
 		String redirectURL = "../usuarios/login.html";
 	    response.sendRedirect(redirectURL);
 	} catch (Exception e) {
+		System.out.println(e.getMessage());
 		String redirectURL = "../usuarios/registererroremail.html";
 	    response.sendRedirect(redirectURL);
 	}

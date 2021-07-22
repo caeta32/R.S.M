@@ -13,7 +13,7 @@ StringBuilder result = new StringBuilder();
 String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
 
 try{
-	   URL dest = new URL("http://localhost/server-central_JEE/ws/?accion=verUsuario&email=" + email);
+	   URL dest = new URL("http://localhost/sitio-cliente_JEE/R.S.M/Servicios%20R.S.M/?accion=verUsuario&email=" + email);
 	   URLConnection yc = dest.openConnection();
 	   BufferedReader in = new BufferedReader(
 	                           new InputStreamReader(
@@ -26,36 +26,45 @@ try{
 	   }
 	   in.close();
 	   
+	   String respuestaHttp = result.toString();
+	   String[] datosSeparados = respuestaHttp.split("\"");
+	   if(datosSeparados.length <= 9) {
+	   	
+	   } else {
+		/* int i=0;
+		for (String s:datosSeparados) {
+			System.out.println(i + " : " + s);
+			i++;
+		} */
+	   	String passSinFormatear = datosSeparados[13];
+	   	System.out.println("PASS SIN FORMATEAR : " + passSinFormatear);
+	   	String passFormateado;
+	   	if(passSinFormatear.contains("\\")){
+	   		passFormateado = passSinFormatear.replace("\\", "");
+	   	} else {
+	   		passFormateado = passSinFormatear;
+	   	}
+		System.out.println("antes del if");
+	   	if (BCrypt.checkpw(password, passFormateado)){
+	   		System.out.println("después del if");	
+	   		HttpSession sesion=request.getSession();  
+	   		sesion.setAttribute("username",datosSeparados[13]);  
+	   		String redirectURL = "../Inicio/indexusuariogratis.jsp";
+	   		response.sendRedirect(redirectURL);
+	   		
+	   	} else {
+	   		System.out.println("En el else del if");
+	   		String redirectURL = "../usuarios/loginerror.html";
+	   		response.sendRedirect(redirectURL);
+	   	}
+	   }
+	   
 } catch (Exception e) {
+	System.out.println("En el catch");
+	System.out.println(e.getMessage());
 	String redirectURL = "../usuarios/loginerror.html";
     response.sendRedirect(redirectURL);
 }
-String respuestaHttp = result.toString();
-String[] datosSeparados = respuestaHttp.split("\"");
-if(datosSeparados.length <= 9) {
-	
-} else {
-	String passSinFormatear = datosSeparados[9];
-	String passFormateado;
-	if(passSinFormatear.contains("\\")){
-		passFormateado = passSinFormatear.replace("\\", "");
-	} else {
-		passFormateado = passSinFormatear;
-	}
-
-	if (BCrypt.checkpw(password, passFormateado)){
-		HttpSession sesion=request.getSession();  
-		sesion.setAttribute("username",datosSeparados[13]);  
-		String redirectURL = "../Inicio/indexusuariogratis.jsp";
-		response.sendRedirect(redirectURL);
-		
-	} else {
-		String redirectURL = "../usuarios/loginerror.html";
-		response.sendRedirect(redirectURL);
-	}
-}
-
-
 %>
 
 
