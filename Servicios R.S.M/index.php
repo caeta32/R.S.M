@@ -94,6 +94,42 @@
                         header('HTTP/1.1 200 OK');
                         break;
                 //------------------------------------------------
+                    case 'verEstacionPorMail' :
+                        if(isset($_GET['email']) && ($_GET['email'] !== "")) {
+                            $response['result'] = $ws->verEstacionporMail($_GET['email']);
+                            $response['status'] = 200;
+                            header('HTTP/1.1 200 OK');
+                        } else {
+                            $response['error'] = 'No hay estacion con este Email';
+                            $response['status'] = 400;
+                            header('HTTP/1.1 400 Bad Request');
+                        }
+                        break;
+                //------------------------------------------------
+                case 'verDatosDeEstacionPorFecha' :
+                    if(isset($_GET['id']) && ($_GET['id'] !== "")) {
+                        $response['result'] = $ws->verDatosDeEstacionPorFecha($_GET['tipoFecha'], $_GET['id']);
+                        $response['status'] = 200;
+                        header('Content-Type: application/json');
+                    } else {
+                        $response['error'] = 'No hay estacion con este Email';
+                        $response['status'] = 400;
+                        header('HTTP/1.1 400 Bad Request');
+                    }
+                    break;
+                //------------------------------------------------
+                case 'verPromediosPorTipoFecha' :
+                    if(isset($_GET['id']) && ($_GET['id'] !== "")) {
+                        $response['result'] = $ws->verPromediosPorTipoFecha($_GET['tipoFecha'], $_GET['id']);
+                        $response['status'] = 200;
+                        header('Content-Type: application/json');
+                    } else {
+                        $response['error'] = 'No hay estacion con este Email';
+                        $response['status'] = 400;
+                        header('HTTP/1.1 400 Bad Request');
+                    }
+                    break;
+                //------------------------------------------------ 
                     default :
                         $response['error'] = 'Acción incorrecta.';
                         $response['status'] = 422;
@@ -178,8 +214,7 @@
                                 // Se insertan los registros recibiendo los parámetros.
                                 // En caso de no recibir uno de los parámetros, ingresará el dato de todos modos, 
                                 // aunque en el cuerpo de la respuesta se devolverá una advertencia, a excepción del email, contraseña y nivelAcceso.
-                                $response['result'] = $ws->ingresarUsuario($_POST['email'], $_POST['nombre'], $_POST['contrasenia'], $_POST['idReducido'], $_POST['nivelAcceso']);
-
+                                $response['result'] = $ws->ingresarUsuario($_POST['email'], $_POST['contrasenia'], $_POST['nombre'], $_POST['apellido'], $_POST['nivelAcceso']);
                                 if ($undefinedParams = Utils::undefinedParams_usuarios($_POST['idReducido'], $_POST['nombre'])) {
                                     $response['warning'] = 'Parametros indefinidos: ' . implode(', ', $undefinedParams);
                                 }
@@ -200,7 +235,7 @@
                     case 'nuevaEstacion' :
                         if (isset($_POST['nombre']) && ($_POST['nombre'] !== "") && isset($_POST['localidad']) && ($_POST['localidad'] !== "")) {
                             // Se insertan los registros recibiendo los parámetros.
-                            $response['result'] = $ws->ingresarEstacion($_POST['id'], $_POST['nombre'], $_POST['localidad']);
+                            $response['result'] = $ws->ingresarEstacion($_POST['id'], $_POST['nombre'], $_POST['localidad'], $_POST['emailCreador']);
 
                             if ($undefinedParams = Utils::undefinedParams_estaciones($_POST['nombre'], $_POST['localidad'], $_POST['longitud'], $_POST['latitud'])) {
                                 $response['warning'] = 'Parametros indefinidos: ' . implode(', ', $undefinedParams);
