@@ -105,6 +105,8 @@
                 $response['status'] = 400;
                 header('HTTP/1.1 400 Bad Request');
             }
+            // Se agrega el tipo del contenido de la respuesta a la cabecera.
+            header('Content-type: application/json');
             // Se devuelve la respuesta.
             echo json_encode($response);
             // Notificar todos los errores de PHP 
@@ -114,6 +116,8 @@
             $response['error'] = 'Error: ' . $e->getMessage();
             $response['status'] = 500;
             header('HTTP/1.1 500 Internal Server Error');
+            // Se agrega el tipo del contenido de la respuesta a la cabecera.
+            header('Content-type: application/json');
             // Se devuelve la respuesta.
             echo json_encode($response);
             // Notificar todos los errores de PHP 
@@ -131,6 +135,8 @@
                 $response['status'] = 500;
                 $response['error'] = $e->getMessage();
             }
+            // Se agrega el tipo del contenido de la respuesta a la cabecera.
+            header('Content-type: application/json');
             // Se devuelve la respuesta.
             echo json_encode($response);
             // Notificar todos los errores de PHP 
@@ -225,7 +231,8 @@
                 $response['status'] = 400;
                 header('HTTP/1.1 400 Bad Request');
             }
-
+            // Se agrega el tipo del contenido de la respuesta a la cabecera.
+            header('Content-type: application/json');
             echo json_encode($response);
             // Notificar todos los errores de PHP 
             error_reporting(E_ALL);
@@ -234,6 +241,8 @@
             $response['error'] =  'Error: ' . $e->getMessage();
             $response['status'] = 500;
             header('HTTP/1.1 500 Internal Server Error');
+            // Se agrega el tipo del contenido de la respuesta a la cabecera.
+            header('Content-type: application/json');
             echo json_encode($response);
             // Notificar todos los errores de PHP 
             error_reporting(E_ALL);
@@ -250,6 +259,8 @@
                 $response['status'] = 500;
                 $response['error'] = $e->getMessage();
             }
+            // Se agrega el tipo del contenido de la respuesta a la cabecera.
+            header('Content-type: application/json');
             // Se devuelve la respuesta.
             echo json_encode($response);
             // Notificar todos los errores de PHP 
@@ -313,6 +324,8 @@
                 $response['status'] = 400;
                 header('HTTP/1.1 400 Bad Request');
             }
+            // Se agrega el tipo del contenido de la respuesta a la cabecera.
+            header('Content-type: application/json');
             // Se envía la respuesta.
             echo json_encode($response);
             // Notificar todos los errores de PHP 
@@ -323,6 +336,8 @@
             $response['error'] = 'Error: ' . $e->getMessage();
             $response['status'] = 500;
             header('HTTP/1.1 500 Internal Server Error');
+            // Se agrega el tipo del contenido de la respuesta a la cabecera.
+            header('Content-type: application/json');
             echo json_encode($response);
             // Notificar todos los errores de PHP 
             error_reporting(E_ALL);
@@ -339,7 +354,8 @@
                 $response['status'] = 500;
                 $response['error'] = $e->getMessage();
             }
-
+            // Se agrega el tipo del contenido de la respuesta a la cabecera.
+            header('Content-type: application/json');
             echo json_encode($response);
             // Notificar todos los errores de PHP 
             error_reporting(E_ALL);
@@ -405,6 +421,8 @@
                 $response['status'] = 400;
                 header('HTTP/1.1 400 Bad Request');
             }
+            // Se agrega el tipo del contenido de la respuesta a la cabecera.
+            header('Content-type: application/json');
             // Se envía la respuesta.
             echo json_encode($response);
             // Notificar todos los errores de PHP 
@@ -415,6 +433,8 @@
             $response['error'] = 'Error: ' . $e->getMessage();
             $response['status'] = 500;
             header('HTTP/1.1 500 Internal Server Error');
+            // Se agrega el tipo del contenido de la respuesta a la cabecera.
+            header('Content-type: application/json');
             echo json_encode($response);
             // Notificar todos los errores de PHP 
             error_reporting(E_ALL);
@@ -431,7 +451,8 @@
                 $response['status'] = 500;
                 $response['error'] = $e->getMessage();
             }
-
+            // Se agrega el tipo del contenido de la respuesta a la cabecera.
+            header('Content-type: application/json');
             echo json_encode($response);
             // Notificar todos los errores de PHP 
             error_reporting(E_ALL);
@@ -441,9 +462,11 @@
 // ========================================================================================================
 // ========================================================================================================
     //MÉTODO ERRÓNEO
-    header('HTTP/1.1 400 BAD REQUEST');
+    header('HTTP/1.1 400 Bad Request');
     $response['status'] = 400;
     $response['error'] = 'Metodo erroneo';
+    // Se agrega el tipo del contenido de la respuesta a la cabecera.
+    header('Content-type: application/json');
     echo json_encode($response);
     exit;
 ?>
