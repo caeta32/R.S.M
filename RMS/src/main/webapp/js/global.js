@@ -36,3 +36,4 @@ let eventBackup = null;
 let hideFromDefault = false;
 let hiddenCollapseStation = true;
 let shownAllStation = true;
+let click = 0;

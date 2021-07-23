@@ -42,7 +42,23 @@ function selectedMarkerAndNearestStation() {
 						localidad: responseJson.result.localidad,
 						represents: "station"
 					});
-			marker.on('click', onClickMarkerStation);
+			/*Creando contenido de popup*/
+			const content = 	
+			'<div class="containerTitlePopup">' +
+				'<strong class="titlePopup">Estación más cercana</strong>' +
+			'</div>' +
+			'<h5 class="mt-3 text-break px-2">' + responseJson.result.nombre + '</h5>' +
+			'<p class="distanciaPopup text-break"><strong>Distancia desde la ubicación seleccionada:</strong></p>' +
+			'<p class="distanciaNumPopup">' + responseJson.result.distancia + ' ' + responseJson.result.unidadDistancia + '</p>' +
+			'<p class="text-muted coordenadasPopup">lat: ' + responseJson.result.latitud + ', lng: ' + responseJson.result.longitud +'</p>';
+			/*Agregando popup*/
+			marker.bindPopup(content, {
+				closeOnEscapeKey: false,
+				offset: L.point(0, -26),
+				closeButton: false,
+				className: 'popup'
+			});
+			marker.on('click', () => onClickMarkerStation(marker));
 			marker.addTo(layerGroup);
 		} else {
 			alert('El código de estado fue: ' + this.status);
@@ -52,18 +68,18 @@ function selectedMarkerAndNearestStation() {
 /*FIN Mostrar marcador seleccionado y otro marcador con la estación más cercana ------------------*/
 
 /*Lo que ocurre si se presiona click en el marcador de una estación. ----------------------*/
-function onClickMarkerStation(e) {
+function onClickMarkerStation(marker) {
 	/*Obtengo las opciones agregadas al marcador.*/
-	let infoStation = this.options;
+	let infoStation = marker.options;
 	
 	/*Si ambos reprsentan una estación y son el mismo...*/
-	if(e.target.options.represents === "station" && 
+	if(infoStation.represents === "station" && 
 	   eventBackup !== null && 
-       eventBackup.target.options.represents === "station" &&
-       eventBackup.target.options.id === e.target.options.id) {
+       eventBackup.options.represents === "station" &&
+       eventBackup.options.id === infoStation.id) {
 		/*Se deselecciona.*/
 		eventBackup = null;
-		e.target.setIcon(markerStation);
+		marker.setIcon(markerStation);
 		paintCollapseByDefault();
 	} else {
 		/*Se guarda el id para la llamada AJAX por los datos metereológicos.*/
@@ -93,31 +109,31 @@ function onClickMarkerStation(e) {
 						/*Si ningún marcador está activo...*/
 						if (eventBackup === null) {
 							/*Se cambia el marcador de estación al "activo".*/
-							e.target.setIcon(markerStationActive);
+							marker.setIcon(markerStationActive);
 							/*Se almacena como marcador activo.*/
-							eventBackup = e;						
+							eventBackup = marker;						
 							/*Se pinta el collapse con los datos metereológicos.*/
 							paintCollapse(infoStation, lastData);
 						} else {
 							/*Si ya hay un marcador activo...*/
 							/*Si representa una ubicación seleccionada por el usuario...*/
-							if (eventBackup.target.options.represents === "click") {
+							if (eventBackup.options.represents === "click") {
 								/*Se cambia por el marcador de selección del usuario "inactivo".*/
-								eventBackup.target.setIcon(markerSelected);
+								eventBackup.setIcon(markerSelected);
 								/*Se cambia el marcador de estación al "activo".*/
-								e.target.setIcon(markerStationActive);
+								marker.setIcon(markerStationActive);
 								/*Se almacena como marcador activo.*/
-								eventBackup = e;
+								eventBackup = marker;
 								/*Se pinta el collapse con los datos metereológicos.*/
 								paintCollapse(infoStation, lastData);
-							} else if (eventBackup.target.options.represents === "station") {
+							} else if (eventBackup.options.represents === "station") {
 								/*Si representa una estación...*/
 								/*Se cambia el activo por el marcador de estación "inactivo".*/
-								eventBackup.target.setIcon(markerStation);
+								eventBackup.setIcon(markerStation);
 								/*Se cambia el marcador de estación al "activo".*/
-								e.target.setIcon(markerStationActive);
+								marker.setIcon(markerStationActive);
 								/*Se almacena como marcador activo.*/
-								eventBackup = e;
+								eventBackup = marker;
 								/*Se pinta el collapse con los datos metereológicos.*/
 								paintCollapse(infoStation, lastData);
 							}
@@ -139,34 +155,30 @@ function onClickMarkerStation(e) {
 /*FIN Lo que ocurre si se presiona click en el marcador de una estación. ----------------------*/
 
 /*Lo que ocurre si se presiona click en el marcador de ubicación seleccionada por el usuario.*/
-function onClickMarkerUser(e) {
+function onClickMarkerUser(markerUser) {
 	/*Si ningún marcador está activo...*/
 	if (eventBackup === null) {
-		console.log('Detecté que ninguno está seleccionado...');
 		/*Se cambia el marcador al "activo".*/
-		e.target.setIcon(markerSelectedActive);
+		markerUser.setIcon(markerSelectedActive);
 		/*Se almacena como marcador activo.*/
-		eventBackup = e;
+		eventBackup = markerUser;
 	} else {
-		console.log('Detecté que hay alguno seleccionado...');
 		/*Si ya hay un marcador activo...*/
 		/*Si representa una ubicación seleccionada por el usuario...*/
-		if (eventBackup.target.options.represents === "click") {
-			console.log('Detecté que está seleccionado el del user...');
+		if (eventBackup.options.represents === "click") {
 			/*Se deselecciona*/
 			/*Se cambia el marcador al "inactivo".*/
-			e.target.setIcon(markerSelected);
+			markerUser.setIcon(markerSelected);
 			/*Se almacena que no hay marcador activo.*/
 			eventBackup = null;	
-		} else if (eventBackup.target.options.represents === "station") {
-			console.log('Detecté que está seleccionada una estación...');
+		} else if (eventBackup.options.represents === "station") {
 			/*Si representa una estación...*/
 			/*Se cambia el activo por el marcador de estación "inactivo".*/
-			eventBackup.target.setIcon(markerStation);
+			eventBackup.setIcon(markerStation);
 			/*Se cambia el marcador de estación al "activo".*/
-			e.target.setIcon(markerSelectedActive);
+			markerUser.setIcon(markerSelectedActive);
 			/*Se almacena como marcador activo.*/
-			eventBackup = e;
+			eventBackup = markerUser;
 			paintCollapseByDefault();
 		}
 	}
@@ -288,7 +300,140 @@ function paintCollapseByDefault() {
 			  + '</div>';
 	} else {
 		hideFromDefault = true;
-		collapseInstance.hide();	
+		collapseInstance.hide();
 	}
 }
 /*FIN Pintar Collapse cuando no se ha seleccionado ninguna estación ------------------------------------*/
+
+/*Desplegar collapse de todas las estaciones. ---------------------------------------------------------*/
+function showCollapseAllStations() {
+	/*Se obtiene o crea el elemento collapse y se abre automáticamente para poder visualizar la información.*/
+	let collapseElement = document.getElementById('collapseAllStations');
+	let collapseInstance = bootstrap.Collapse.getOrCreateInstance(collapseElement);
+	collapseInstance.show();
+}
+/*FIN - Desplegar collapse de todas las estaciones. ---------------------------------------------------------*/
+
+/*Mostrar todas las estaciones en el mapa y en el listado de la barra lateral --------------------------*/
+function showAllStations(idStation = null) {
+	return new Promise(resolve => {
+		markerToReturn = null;
+		/*Petición AJAX*/
+		let req = makeRequest();
+		
+		if(!req) {
+			alert('ERROR : No es posible crear una instancia XMLHTTP');
+		} else {
+			req.onreadystatechange = function () {
+				if (this.readyState == 4) {
+					if(this.status == 200) {
+						let responseJson = JSON.parse(this.responseText);
+						let arrayStations = responseJson.result;
+						/*Se crea un fragmento para agregar los items y luego pasarlos al DOM (mejora de rendimiento).*/
+						const fragment = document.createDocumentFragment();
+						/*Se recorren las estaciones.*/
+						arrayStations.forEach(function(station) {
+							/*Agregando marcador en las coordenadas obtenidas.*/
+							let marker = L.marker([station.latitud, station.longitud], 
+								{
+									icon: markerStation, 
+									id: station.id, 
+									name: station.nombre, 
+									localidad: station.localidad,
+									represents: "station"
+								});
+							/*Creando contenido de popup*/
+							const content = 	
+							'<div class="containerTitlePopup">' +
+								'<strong class="titlePopup">Estación Metereológica</strong>' +
+							'</div>' +
+							'<h5 class="mt-3 text-break px-2">' + station.nombre + '</h5>' +
+							'<p class="text-muted coordenadasPopup">lat: ' + (+station.latitud).toPrecision(9) + ', lng: ' + (+station.longitud).toPrecision(9) +'</p>';
+							/*Agregando popup*/
+							marker.bindPopup(content, {
+								closeOnEscapeKey: false,
+								offset: L.point(0, -26),
+								closeButton: false,
+								className: 'popup'
+							});
+							marker.on('click', () => onClickMarkerStation(marker));
+							marker.addTo(layerGroup);
+							
+							if(station.id === idStation)
+								markerToReturn = marker;
+							
+							/*Creando los elementos HTML con sus atributos y contenido.*/
+							const a = document.createElement("a");
+							a.setAttribute("href", "#");
+							a.classList.add("list-group-item", "list-group-item-action", "flex-column", "align-items-start");
+							
+							const div = document.createElement("div");
+							div.classList.add("d-flex", "w-100", "justify-content-between");
+							a.appendChild(div);
+							
+							const h5 = document.createElement("h5");
+							h5.classList.add("mb-2");
+							h5.textContent = station.nombre;
+							div.appendChild(h5);
+							
+							const small = document.createComment("<!-- <small>Corriendo hace: 3 meses (sin implmenetar)</small> -->");
+							div.appendChild(small);
+							
+							const p = document.createElement("p");
+							p.classList.add("mb-1");
+							p.textContent = "Localidad: " + station.localidad;
+							a.appendChild(p);
+							
+							/*Se le asigna al elemento <a>, la funcionalildad de seleccionar la estación 
+							que corresponde al hacerle click, además de pintar los datos metereológicos de
+							dicha estación en el collapse de estación seleccionada.*/
+							a.addEventListener('click', async () => {
+								let mark = null;
+								/*Si no se están mostrando todas las estaciones...*/
+								if(shownAllStation === false) {
+									/*Se borran los posibles marcadores previos que estuviesen agregados al grupo.*/
+									layerGroup.clearLayers();
+									/*Se muestran todas las estaciones registradas nuevamente.*/
+									mark = await showAllStations(station.id);
+									if(mark === null)
+										alert("ERROR: No se encontró registrada la estación seleccionada.")
+									/*Se marca que se están mostrando todas las estaciones.*/
+									shownAllStation = true;
+								} else {
+									mark = marker;
+								}
+								if(mark.isPopupOpen()) {
+									mark.closePopup();
+								} else {
+									mark.openPopup();
+								}
+								onClickMarkerStation(mark);
+							});
+							
+							/*Se agrega el elemento de la etiqueta <a> al fragmento.*/
+							fragment.appendChild(a);
+						});
+						/*Se obtiene el elemento del DOM que contendrá todos los items de cada estación.*/
+						const infoElement = document.getElementById('infoCollapseAllStations');
+						/*Asegurándose de que no tenga items ya ingresados.*/
+						infoElement.innerHTML = "";
+						/*Agregando el fragmento.*/
+						infoElement.appendChild(fragment);
+						/*Se despliega el collapse de todas las estaciones.*/
+						showCollapseAllStations();
+					} else {
+						alert('El código de estado fue: ' + this.status);
+					}
+					resolve(markerToReturn);
+				}
+			}
+			let fileURL = '../Controllers/AjaxController.jsp';
+			let param = '?accion=verTodoEstaciones';
+			req.open('GET', fileURL + param, true);
+			req.send();
+		}
+		/*FIN - Petición AJAX*/
+	})
+	/*FIN Promesa*/
+}
+/*FIN - Mostrar todas las estaciones en el mapa y en el listado de la barra lateral --------------------------*/
