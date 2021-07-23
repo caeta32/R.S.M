@@ -31,7 +31,8 @@
 </head>
 <body>
 	<div
-		style="width: 17%; height: 92.9vh; position: absolute; padding-top: 3%;">
+		style="width: 19%; height: 100%; overflow: auto; position: absolute; padding-top: 3%; 
+				background: rgba(0,88,0,0.11);">
 		<div class="list-group" style="border-radius: 0px">
 			<!-- Collapse para mostrar la info de una estación seleccionada -->
 			<a href="#collapseSelectedStation" data-bs-toggle="collapse"
@@ -58,15 +59,36 @@
 				</div>
 			</div>
 			<!-- FIN Collapse para mostrar la info de una estación seleccionada -->
-			<a href="#"
-				class="list-group-item list-group-item-action flex-column align-items-start">
-				<div class="d-flex w-100 justify-content-between">
-					<h5 class="mb-1">Aficionados del Tiempoo</h5>
-					<small>Corriendo hace: 3 meses</small>
-				</div>
-				<p class="mb-1">Localidad: Maldonado</p>
-			</a>
+			
+			<!-- Collapse para mostrar la info de todas las estaciones -->
+			<a href="#collapseAllStations" data-bs-toggle="collapse"
+				role="button" aria-expanded="false"
+				aria-controls="collapseAllStations" class="list-group-item"
+				style="background: rgba(5, 78, 0, 0.26792715377166487);">
 
+				<div class="row justify-content-between mt-2">
+					<div class="col-lg-auto">
+						<h5>
+							<strong>Todas las estaciones</strong>
+						</h5>
+					</div>
+					<div class="col-lg-auto">
+						<h5><<</h5>
+					</div>
+				</div>
+
+			</a>
+			<!-- -- -->
+			<div class="collapse" id="collapseAllStations">
+				<div class="list-group" id="infoCollapseAllStations">
+					<!-- Se rellena desde javascript. -->
+				</div>
+			</div>
+			<!--FIN - Collapse para mostrar la info de todas las estaciones -->
+			
+			<div class="list-group-item border-0 text-break text-center bg-transparent text-dark mt-3" style="font-size: 1rem;">
+				© 2021 R.S.M. Todos los derechos reservados.
+			</div>
 		</div>
 	</div>
 	<div class="containerMap">

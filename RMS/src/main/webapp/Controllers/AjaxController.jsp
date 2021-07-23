@@ -27,6 +27,9 @@ switch (accion) {
 		aux1 = request.getParameter("id");
 		params = "?accion="+accion+"&id="+aux1;		
 		break;
+	case "verTodoEstaciones":
+		params = "?accion="+accion;		
+		break;
 	default:
 		params = "";
 		

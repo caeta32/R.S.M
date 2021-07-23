@@ -37,30 +37,25 @@ try{
 			i++;
 		} */
 	   	String passSinFormatear = datosSeparados[13];
-	   	System.out.println("PASS SIN FORMATEAR : " + passSinFormatear);
 	   	String passFormateado;
 	   	if(passSinFormatear.contains("\\")){
 	   		passFormateado = passSinFormatear.replace("\\", "");
 	   	} else {
 	   		passFormateado = passSinFormatear;
 	   	}
-		System.out.println("antes del if");
 	   	if (BCrypt.checkpw(password, passFormateado)){
-	   		System.out.println("después del if");	
 	   		HttpSession sesion=request.getSession();  
 	   		sesion.setAttribute("username",datosSeparados[13]);  
 	   		String redirectURL = "../Inicio/indexusuariogratis.jsp";
 	   		response.sendRedirect(redirectURL);
 	   		
 	   	} else {
-	   		System.out.println("En el else del if");
 	   		String redirectURL = "../usuarios/loginerror.html";
 	   		response.sendRedirect(redirectURL);
 	   	}
 	   }
 	   
 } catch (Exception e) {
-	System.out.println("En el catch");
 	System.out.println(e.getMessage());
 	String redirectURL = "../usuarios/loginerror.html";
     response.sendRedirect(redirectURL);
